@@ -7,5 +7,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_home__frag">Home_Frag</string>
+    <string name="title_activity_meter">Meter</string>
 
 </resources>

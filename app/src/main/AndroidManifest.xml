@@ -32,6 +32,10 @@
             android:name=".Home_Frag"
             android:label="@string/title_activity_home__frag" >
         </activity>
+        <activity
+            android:name=".Meter"
+            android:label="@string/title_activity_meter" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
