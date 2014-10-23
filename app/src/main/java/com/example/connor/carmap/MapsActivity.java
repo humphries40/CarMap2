@@ -2,6 +2,7 @@ package com.example.connor.carmap;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -11,22 +12,32 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-
+    private final String TAG = ((Object) this).getClass().getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "+++ In onCreate() +++");
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e(TAG, "+++ In onStart() +++");
+      //  setContentView(R.layout.activity_maps);
+         setUpMapIfNeeded();
+    }
     protected void onResume() {
         super.onResume();
+        Log.e(TAG, "+++ In onResume() +++");
         setUpMapIfNeeded();
     }
 
     protected void onPause() {
         super.onPause();
+        Log.e(TAG, "+++ In onPause() +++");
     }
 
     protected void onDestroy() {

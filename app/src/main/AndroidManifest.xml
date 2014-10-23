@@ -36,6 +36,14 @@
             android:name=".Meter"
             android:label="@string/title_activity_meter" >
         </activity>
+        <activity
+            android:name=".Homescreen"
+            android:label="@string/title_activity_homescreen" >
+        </activity>
+        <activity
+            android:name=".ActionBar"
+            android:label="@string/title_activity_action_bar" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
