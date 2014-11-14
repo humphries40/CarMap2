@@ -1,13 +1,20 @@
 package com.example.connor.carmap;
 
+import android.content.Context;
+import android.location.Criteria;
+import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.location.LocationManager;
+import android.location.Location;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 
 public class MapsActivity extends FragmentActivity {
 
@@ -78,6 +85,27 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+        LocationManager locationmanager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        Location myLocation = locationmanager.getLastKnownLocation(locationProvider);
+
+        double lat= myLocation.getLatitude();
+        double longe = myLocation.getLongitude();
+        LatLng mylocation = new LatLng(lat, longe);
+
+        mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng point) {
+                mMap.addMarker(new MarkerOptions().position(point));
+            }
+        });
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 15));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(40.014235, -83.030941)).draggable(true));
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setRotateGesturesEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 }
