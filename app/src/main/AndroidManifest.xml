@@ -10,11 +10,6 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data
@@ -25,24 +20,25 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".Home"
-            android:label="@string/title_activity_home" >
-        </activity>
-        <activity
-            android:name=".Home_Frag"
-            android:label="@string/title_activity_home__frag" >
-        </activity>
-        <activity
-            android:name=".Meter"
+            android:name=".MeterActivity"
             android:label="@string/title_activity_meter" >
         </activity>
         <activity
-            android:name=".Homescreen"
+            android:name=".HomeActivity"
             android:label="@string/title_activity_homescreen" >
         </activity>
         <activity
-            android:name=".ActionBar"
-            android:label="@string/title_activity_action_bar" >
+            android:name=".NavigationActivity"
+            android:label="@string/title_activity_navigation" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 

@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">CarMap</string>
-    <string name="title_activity_maps">Dude where\'s my car?</string>
+    <string name="title_activity_maps">Map</string>
     <string name="title_activity_home">Home</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -10,5 +10,10 @@
     <string name="title_activity_meter">Meter</string>
     <string name="title_activity_homescreen">Homescreen</string>
     <string name="title_activity_action_bar">ActionBar</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="navtitle">Dude Where\'s My Car</string>
+    <string name="exit">Exit</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 
 </resources>
