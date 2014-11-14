@@ -40,13 +40,13 @@ public class MeterActivity extends Activity {
         int milli = ((((hours * 60) + mins) * 60) + secs) *1000;
         String hrs, mns, sc;
         new CountDownTimer(milli, 1000) {
-
             public void onTick(long millisUntilFinished) {
                 int secs = (int)(millisUntilFinished / 1000);
                 int mins = secs / 60;
                 secs = secs % 60;
                 int hours = mins / 60;
                 mins = mins % 60;
+
                 //Needs to return these fields to the clock
                 // Need to have this return warnings at certain intervals
             }
