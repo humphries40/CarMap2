@@ -15,5 +15,6 @@
     <string name="exit">Exit</string>
     <string name="settings">Settings</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="maptitle">My Parking Locations</string>
 
 </resources>

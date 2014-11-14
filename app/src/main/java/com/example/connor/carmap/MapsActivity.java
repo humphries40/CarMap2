@@ -8,13 +8,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.location.LocationManager;
 import android.location.Location;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+
 
 public class MapsActivity extends FragmentActivity {
 
@@ -100,6 +104,24 @@ public class MapsActivity extends FragmentActivity {
                 mMap.addMarker(new MarkerOptions().position(point));
             }
         });
+
+        mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                LatLng point = marker.getPosition();
+                Context context = getApplicationContext();
+                CharSequence text = "Deleting Marker at position: " + point.toString();
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+                marker.remove();
+                return false;
+            }
+        });
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 15));
         //mMap.addMarker(new MarkerOptions().position(new LatLng(40.014235, -83.030941)).draggable(true));
         mMap.setMyLocationEnabled(true);
