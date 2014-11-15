@@ -1,6 +1,8 @@
 package com.example.connor.carmap;
 
 import android.content.Context;
+import android.content.Intent;
+import android.location.Address;
 import android.location.Criteria;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
@@ -8,7 +10,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.location.LocationManager;
 import android.location.Location;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
+import android.location.Geocoder;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,8 +26,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
+import java.io.IOException;
+import java.util.List;
 
-public class MapsActivity extends FragmentActivity {
+
+public class MapsActivity extends FragmentActivity implements View.OnClickListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private final String TAG = ((Object) this).getClass().getSimpleName();
@@ -29,8 +39,32 @@ public class MapsActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "+++ In onCreate() +++");
         setContentView(R.layout.activity_maps);
+
+        View btnNewGame = findViewById(R.id.button_submit);
+        btnNewGame.setOnClickListener(this);
+
         setUpMapIfNeeded();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.map, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.help_settings) {
+            startActivity(new Intent(this, MapHelpActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -123,11 +157,54 @@ public class MapsActivity extends FragmentActivity {
         });
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 15));
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(40.014235, -83.030941)).draggable(true));
+
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setRotateGesturesEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
+    }
+
+    public void onClick(View v){
+        if (v.getId() == R.id.button_submit) {
+
+            EditText mAddress = (EditText)findViewById(R.id.address);
+            String addr = mAddress.getText().toString();
+
+            Context context = getApplicationContext();
+            CharSequence text = "Address = "+ addr;
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            if (addr.length() > 0){
+
+                LatLng point = getLocationFromAddress(addr);
+                mMap.addMarker(new MarkerOptions().position(point));
+
+            }
+        }
+    }
+
+    public LatLng getLocationFromAddress(String strAddress) {
+
+        Geocoder geoCoder = new Geocoder(this);
+        List<Address> address;
+        double latitude = 0, longitude = 0;
+
+        try {
+            List<Address> addresses =
+                    geoCoder.getFromLocationName(strAddress, 1);
+            if (addresses.size() > 0) {
+                latitude = addresses.get(0).getLatitude();
+                longitude = addresses.get(0).getLongitude();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        LatLng pos = new LatLng(latitude, longitude);
+        return pos;
     }
 }

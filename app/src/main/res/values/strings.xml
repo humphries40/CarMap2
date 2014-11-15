@@ -16,5 +16,13 @@
     <string name="settings">Settings</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="maptitle">My Parking Locations</string>
+    <string name="help_settings">Help</string>
+    <string name="title_activity_map_help">MapHelpActivity</string>
+    <string name="help_text"><b>How to manage parking spots</b>\n\n
+        You can add a new parking spot by long-clicking on the map, or by adding an address to the text field.\n\n
+        To remove a parking spot click on the marker.\n\n</string>
+    <string name="exit_help">Close</string>
+    <string name="edit_message">Add by Address</string>
+    <string name="button_send">Add</string>
 
 </resources>
