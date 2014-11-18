@@ -5,10 +5,15 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
 public class MeterActivity extends Activity {
 
+    private CountDownTimer timer;
+    private CountDownTimer pausedTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,11 +40,21 @@ public class MeterActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void createMeterTimer(int hours, int mins, int secs){
 
+    public void startTimer(View temp){
+
+        EditText mEditMin = (EditText)findViewById(R.id.meterMins);
+        EditText mEditHrs = (EditText)findViewById(R.id.meterHrs);
+        final TextView time = (TextView)findViewById(R.id.meterTime);
+        int secs = 0;
+        int hours = Integer.parseInt(mEditHrs.getText().toString());
+        int mins = Integer.parseInt(mEditMin.getText().toString());
         int milli = ((((hours * 60) + mins) * 60) + secs) *1000;
         String hrs, mns, sc;
-        new CountDownTimer(milli, 1000) {
+        if(timer != null){
+            timer.cancel();
+        }
+        timer = new CountDownTimer(milli, 1000) {
             public void onTick(long millisUntilFinished) {
                 int secs = (int)(millisUntilFinished / 1000);
                 int mins = secs / 60;
@@ -47,7 +62,7 @@ public class MeterActivity extends Activity {
                 int hours = mins / 60;
                 mins = mins % 60;
 
-                //Needs to return these fields to the clock
+                time.setText(hours + "hrs " + mins + "mins " + secs + "secs left on Meter");
                 // Need to have this return warnings at certain intervals
             }
 
@@ -55,5 +70,23 @@ public class MeterActivity extends Activity {
                 //Need to have this return an alarm
             }
         }.start();
+    }
+
+    public void stopTimer(View temp)
+    {
+        timer.cancel();
+        final TextView time = (TextView)findViewById(R.id.meterTime);
+        time.setText("Meter Canceled");
+    }
+    public void resetTimer(View temp)
+    {
+        timer.cancel();
+        EditText mEditMin = (EditText)findViewById(R.id.meterMins);
+        EditText mEditHrs = (EditText)findViewById(R.id.meterHrs);
+        final TextView time = (TextView)findViewById(R.id.meterTime);
+
+        mEditHrs.setText("");
+        mEditMin.setText("");
+        time.setText("No time on Meter");
     }
 }
