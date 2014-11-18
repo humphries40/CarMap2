@@ -1,8 +1,11 @@
 package com.example.connor.carmap;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +17,18 @@ public class MeterActivity extends Activity {
 
     private CountDownTimer timer;
     private CountDownTimer pausedTimer;
+
+    private NotificationCompat.Builder timeOut =
+            new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.abc_ab_transparent_dark_holo)
+                    .setContentTitle("Meter Out of Time")
+                    .setContentText("The meter you set is out of time!");
+
+    private NotificationCompat.Builder fiveMinLeft =
+            new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.abc_ab_transparent_dark_holo)
+                    .setContentTitle("Meter Running Low")
+                    .setContentText("Meter has 5 minutes left!");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +62,15 @@ public class MeterActivity extends Activity {
         EditText mEditHrs = (EditText)findViewById(R.id.meterHrs);
         final TextView time = (TextView)findViewById(R.id.meterTime);
         int secs = 0;
-        int hours = Integer.parseInt(mEditHrs.getText().toString());
-        int mins = Integer.parseInt(mEditMin.getText().toString());
+        int hours = 0;
+        if(mEditHrs.getText().toString() != null)
+        {
+            hours = Integer.parseInt(mEditHrs.getText().toString());}
+        int mins = 0;
+        if(mEditMin.getText().toString() != null){
+            mins = Integer.parseInt(mEditMin.getText().toString());
+        }
+
         int milli = ((((hours * 60) + mins) * 60) + secs) *1000;
         String hrs, mns, sc;
         if(timer != null){
@@ -63,11 +85,23 @@ public class MeterActivity extends Activity {
                 mins = mins % 60;
 
                 time.setText(hours + "hrs " + mins + "mins " + secs + "secs left on Meter");
-                // Need to have this return warnings at certain intervals
+                if(hours == 0 && mins == 5 && secs == 0){
+                    int mNotificationId = 002;
+                    // Gets an instance of the NotificationManager service
+                    NotificationManager mNotifyMgr =
+                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    mNotifyMgr.notify(mNotificationId, fiveMinLeft.build());
+                }
+
             }
 
             public void onFinish() {
-                //Need to have this return an alarm
+                int mNotificationId = 001;
+              // Gets an instance of the NotificationManager service
+                NotificationManager mNotifyMgr =
+                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                mNotifyMgr.notify(mNotificationId, timeOut.build());
+                time.setText("Time out on Meter!");
             }
         }.start();
     }
