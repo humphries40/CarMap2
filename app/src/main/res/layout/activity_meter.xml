@@ -9,11 +9,92 @@
     tools:context="com.example.connor.carmap.MeterActivity"
     android:id="@+id/meter">
 
-    <TextClock
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textClock"
-        android:layout_centerVertical="true"
+        android:id="@+id/meterTitle"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:editable="false" />
+        android:layout_alignParentStart="true"
+        android:text="Meter Time"
+        android:textSize="32dp"
+        android:gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:onClick="startTimer"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:id="@+id/button2"
+        android:layout_alignTop="@+id/button"
+        android:layout_toEndOf="@+id/button"
+        android:onClick="stopTimer"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        android:id="@+id/button3"
+        android:layout_alignTop="@+id/button2"
+        android:layout_toEndOf="@+id/button2"
+        android:onClick="resetTimer"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/meterMins"
+        android:layout_marginBottom="54dp"
+        android:layout_above="@+id/button"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/meterHrs"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/meterMins"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Hours"
+        android:id="@+id/textView"
+        android:layout_toEndOf="@+id/meterHrs"
+        android:layout_alignTop="@+id/meterHrs" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Minutes"
+        android:id="@+id/textView2"
+        android:layout_alignBottom="@+id/meterMins"
+        android:layout_alignStart="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Time"
+        android:id="@+id/meterTime"
+        android:layout_below="@+id/meterTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp"
+        />
+
+
 </RelativeLayout>
