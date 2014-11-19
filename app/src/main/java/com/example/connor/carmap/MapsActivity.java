@@ -27,11 +27,13 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity implements View.OnClickListener{
 
+    private ArrayList<MarkerOptions> markers;//this stores all the markers on the map for saving them and restoring them
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private final String TAG = ((Object) this).getClass().getSimpleName();
     @Override
@@ -75,14 +77,38 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
          setUpMapIfNeeded();
     }
     protected void onResume() {
+        Context context = getApplicationContext();
+        String ser = SerializeObject.ReadSettings(context, "carMapMarkers.dat");
+        if (ser != null && !ser.equalsIgnoreCase("")) {
+            Object obj = SerializeObject.stringToObject(ser);
+            // Then cast it to your object and
+            if (obj instanceof ArrayList) {
+                // Do something
+                markers = (ArrayList<MarkerOptions>)obj;
+            }
+        }
+        int count = 0;
+        while(count < markers.size())
+        {
+            mMap.addMarker(markers.get(count));
+            count++;
+        }
         super.onResume();
         Log.e(TAG, "+++ In onResume() +++");
         setUpMapIfNeeded();
     }
 
     protected void onPause() {
+        String ser = SerializeObject.objectToString(markers);
+        Context context = getApplicationContext();
+        if (ser != null && !ser.equalsIgnoreCase("")) {
+            SerializeObject.WriteSettings(context, ser, "carMapMarkers.dat");
+        } else {
+            SerializeObject.WriteSettings(context, "", "carMapMarkers.dat");
+        }
         super.onPause();
         Log.e(TAG, "+++ In onPause() +++");
+
     }
 
     protected void onDestroy() {
@@ -135,13 +161,17 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng point) {
-                mMap.addMarker(new MarkerOptions().position(point));
+                MarkerOptions temp = new MarkerOptions().position((point));
+                mMap.addMarker(temp);
+                markers.add(temp);
+
             }
         });
 
         mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+
 
                 LatLng point = marker.getPosition();
                 Context context = getApplicationContext();
@@ -150,7 +180,10 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
-
+                if(markers.contains(marker))
+                {
+                    markers.remove(marker);
+                }
                 marker.remove();
                 return false;
             }
@@ -180,8 +213,9 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
             if (addr.length() > 0){
 
                 LatLng point = getLocationFromAddress(addr);
-                mMap.addMarker(new MarkerOptions().position(point));
-
+                MarkerOptions temp = new MarkerOptions().position((point));
+                mMap.addMarker(temp);
+                markers.add(temp);
             }
         }
     }

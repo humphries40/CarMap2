@@ -63,11 +63,11 @@ public class MeterActivity extends Activity {
         final TextView time = (TextView)findViewById(R.id.meterTime);
         int secs = 0;
         int hours = 0;
-        if(mEditHrs.getText().toString() != null)
+        if(mEditHrs.getText().toString() != "")
         {
             hours = Integer.parseInt(mEditHrs.getText().toString());}
         int mins = 0;
-        if(mEditMin.getText().toString() != null){
+        if(mEditMin.getText().toString() != ""){
             mins = Integer.parseInt(mEditMin.getText().toString());
         }
 
