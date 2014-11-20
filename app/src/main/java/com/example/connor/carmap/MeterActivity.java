@@ -63,13 +63,12 @@ public class MeterActivity extends Activity {
         final TextView time = (TextView)findViewById(R.id.meterTime);
         int secs = 0;
         int hours = 0;
-        if(mEditHrs.getText().toString() != "")
-        {
-            hours = Integer.parseInt(mEditHrs.getText().toString());}
+
+        if(mEditHrs.getText().toString().compareTo("") != 0)
+        {hours += Integer.parseInt(mEditHrs.getText().toString());}
         int mins = 0;
-        if(mEditMin.getText().toString() != ""){
-            mins = Integer.parseInt(mEditMin.getText().toString());
-        }
+        if(mEditMin.getText().toString().compareTo("") != 0)
+        {mins += Integer.parseInt(mEditMin.getText().toString());}
 
         int milli = ((((hours * 60) + mins) * 60) + secs) *1000;
         String hrs, mns, sc;
