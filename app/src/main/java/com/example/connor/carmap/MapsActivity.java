@@ -28,16 +28,18 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity implements View.OnClickListener{
 
-    private ArrayList<MarkerOptions> markers;//this stores all the markers on the map for saving them and restoring them
+    private ArrayList<Marker> markers;//this stores all the markers on the map for saving them and restoring them
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private final String TAG = ((Object) this).getClass().getSimpleName();
     @Override
@@ -76,7 +78,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onStart() {
         super.onStart();
-        markers = new ArrayList<MarkerOptions>();
+        markers = new ArrayList<Marker>();
         Log.e(TAG, "+++ In onStart() +++");
       //  setContentView(R.layout.activity_maps);
          setUpMapIfNeeded();
@@ -93,7 +95,10 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
                 double latitude = Double.parseDouble(stringArray[0]);
                 double longitude = Double.parseDouble(stringArray[1]);
                 MarkerOptions temp = new MarkerOptions().position(new LatLng(latitude, longitude));
-                markers.add(temp);
+
+                Marker mark = mMap.addMarker(temp);
+                markers.add(mark);
+                mark.remove();
             }
             din.close();
             loadMarkers(markers);
@@ -108,12 +113,15 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
     protected void onPause() {
         try {
+
+            //Write the Array of markers to file
+
             // Modes: MODE_PRIVATE, MODE_WORLD_READABLE, MODE_WORLD_WRITABLE
-            FileOutputStream output = openFileOutput("latlngpoints.txt",
-                    Context.MODE_PRIVATE);
+
+            FileOutputStream output = openFileOutput("latlngpoints.txt",Context.MODE_PRIVATE);
             DataOutputStream dout = new DataOutputStream(output);
             dout.writeInt(markers.size()); // Save line count
-            for (MarkerOptions curMark : markers) {
+            for (Marker curMark : markers) {
                 LatLng point = curMark.getPosition();
                 dout.writeUTF(point.latitude + "," + point.longitude);
                 Log.v("write", point.latitude + "," + point.longitude);
@@ -178,9 +186,17 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng point) {
+
+                Context context = getApplicationContext();
+                CharSequence text = "Added Marker at position: " + point.toString();
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
                 MarkerOptions temp = new MarkerOptions().position((point));
-                mMap.addMarker(temp);
-                markers.add(temp);
+                Marker mark = mMap.addMarker(temp);
+                markers.add(mark);
 
             }
         });
@@ -189,17 +205,18 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-
                 LatLng point = marker.getPosition();
                 Context context = getApplicationContext();
-                CharSequence text = "Deleting Marker at position: " + point.toString();
+                CharSequence text = "Deleted Marker at position: " + point.toString();
                 int duration = Toast.LENGTH_SHORT;
+
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
-                if(markers.contains(marker))
-                {
-                    markers.remove(marker);
+                for (int i = 0; i < markers.size(); i++) {
+                    Marker mark = markers.get(i);
+                    LatLng point22 = mark.getPosition();
+                    if (point.equals(point22)) markers.remove(i);
                 }
                 marker.remove();
                 return false;
@@ -231,8 +248,8 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
                 LatLng point = getLocationFromAddress(addr);
                 MarkerOptions temp = new MarkerOptions().position((point));
-                mMap.addMarker(temp);
-                markers.add(temp);
+                Marker marker = mMap.addMarker(temp);
+                markers.add(marker);
             }
         }
     }
@@ -259,10 +276,14 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         return pos;
     }
 
-    private void loadMarkers(ArrayList<MarkerOptions> toLoad){
+    private void loadMarkers(ArrayList<Marker> toLoad){
         int count = 0;
         while(count < toLoad.size()) {
-            mMap.addMarker(toLoad.get(count));
+
+            Marker mark = toLoad.get(count);
+            LatLng point = mark.getPosition();
+            MarkerOptions temp = new MarkerOptions().position((point));
+            mMap.addMarker(temp);
             count++;
         }
     }
