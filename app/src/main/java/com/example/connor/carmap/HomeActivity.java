@@ -25,52 +25,16 @@ import java.util.ArrayList;
 public class HomeActivity extends Activity {
 
     private final String TAG = ((Object) this).getClass().getSimpleName();
-    private ArrayList<LatLng> points;//this stores all the markers on the map for saving them and restoring them
-    ListView lv;
-
+    private ArrayList<LatLng> points;
+    PointArrayAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "+++ In onCreate() +++");
         setContentView(R.layout.activity_homescreen);
-        points = new ArrayList<LatLng>();
+        populateList();
 
-        try {
-            FileInputStream input = openFileInput("latlngpoints.txt");
-            DataInputStream din = new DataInputStream(input);
-            int sz = din.readInt(); // Read line count
-            for (int i = 0; i < sz; i++) {
-                String str = din.readUTF();
-                Log.v("read", str);
-                String[] stringArray = str.split(",");
-                double latitude = Double.parseDouble(stringArray[0]);
-                double longitude = Double.parseDouble(stringArray[1]);
-                LatLng temp = new LatLng(latitude, longitude);
-
-                points.add(temp);
-            }
-            din.close();
-        } catch (IOException exc) {
-            exc.printStackTrace();
-        }
-
-
-
-        CharSequence text = "In Home Activity " + points.toString();
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, text, duration);
-        toast.show();
-
-        lv = (ListView)findViewById(R.id.lv);
-        PointArrayAdapter adapter = new PointArrayAdapter(this, points);
-        lv.setAdapter(adapter);
-
-        LatLng test = adapter.getItem(0);
-
-        text = "In Home Activity test getItem " + test.toString();
-        toast = Toast.makeText(this, text, duration);
-        toast.show();
     }
 
 
@@ -87,7 +51,12 @@ public class HomeActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        if (id == R.id.clear_list) {
+            points.clear();
+            adapter.notifyDataSetChanged();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -101,25 +70,7 @@ public class HomeActivity extends Activity {
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "+++ In onResume() +++");
-        try {
-            FileInputStream input = openFileInput("latlngpoints.txt");
-            DataInputStream din = new DataInputStream(input);
-            int sz = din.readInt(); // Read line count
-            for (int i = 0; i < sz; i++) {
-                String str = din.readUTF();
-                Log.v("read", str);
-                String[] stringArray = str.split(",");
-                double latitude = Double.parseDouble(stringArray[0]);
-                double longitude = Double.parseDouble(stringArray[1]);
-                LatLng temp = new LatLng(latitude, longitude);
-
-                points.add(temp);
-            }
-            din.close();
-        } catch (IOException exc) {
-            exc.printStackTrace();
-        }
-
+        populateList();
     }
     protected void onPause() {
         try {
@@ -144,4 +95,37 @@ public class HomeActivity extends Activity {
         Log.e(TAG, "+++ In onPause() +++");
 
     }
+
+    private void populateList() {
+
+        points = new ArrayList<LatLng>();
+
+
+        //popuate arrayList of LatLngs
+        try {
+            FileInputStream input = openFileInput("latlngpoints.txt");
+            DataInputStream din = new DataInputStream(input);
+            int sz = din.readInt(); // Read line count
+            for (int i = 0; i < sz; i++) {
+                String str = din.readUTF();
+                Log.v("read", str);
+                String[] stringArray = str.split(",");
+                double latitude = Double.parseDouble(stringArray[0]);
+                double longitude = Double.parseDouble(stringArray[1]);
+                LatLng temp = new LatLng(latitude, longitude);
+
+                points.add(temp);
+            }
+            din.close();
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        }
+
+        //create the adapter
+        adapter = new PointArrayAdapter(this, points);
+        //attach adapter to view
+        ListView listView = (ListView) findViewById(R.id.lv);
+        listView.setAdapter(adapter);
+    }
+
 }

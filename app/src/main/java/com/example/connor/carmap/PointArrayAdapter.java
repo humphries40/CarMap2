@@ -25,26 +25,12 @@ import static com.google.maps.android.PolyUtil.containsLocation;
 /**
  * Created by palmek4 on 11/20/2014.
  */
-public class PointArrayAdapter extends BaseAdapter {
+public class PointArrayAdapter extends ArrayAdapter<LatLng> {
 
-    ArrayList<LatLng> points;
-    Activity context;
-
-    LayoutInflater myInflator;
     List<LatLng> campusPoints = new ArrayList<LatLng>();
 
     public PointArrayAdapter (Activity context,  ArrayList<LatLng> list) {
-        super();
-        this.context = context;
-        this.points = list;
-
-        myInflator = LayoutInflater.from(context);
-
-
-        CharSequence text = "In Adapter " + points.toString();
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        super(context, 0, list);
 
         campusPoints.add(new LatLng(40.018166, -83.023682));
         campusPoints.add(new LatLng(40.017196, -82.996688));
@@ -56,67 +42,32 @@ public class PointArrayAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-        CharSequence text = "Size of Points = " + points.size();
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        LatLng point = getItem(position);
 
-        return points.size();
-    }
-
-    @Override
-    public LatLng getItem(int position) {
-        CharSequence text = "Getting item: " + points.get(position).toString();
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-
-        return points.get(position);
-    }
-
-    @Override
-    public long getItemId(int index) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-
-        CharSequence text = "In getView!!!!!!!!!!!!!!";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-
-        LatLng point = getItem(i);
-
-        if (view == null) {
-            view = myInflator.inflate(android.R.layout.simple_list_item_1, viewGroup, false);
-            view.setTag(android.R.id.text1,view.findViewById(android.R.id.text1));
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.my_list_item, parent, false);
         }
 
+        TextView tvAddress = (TextView) convertView.findViewById(R.id.list_address);
+        TextView tvSS = (TextView) convertView.findViewById(R.id.list_street_sweeping);
 
-        String address = latLongToAddress(point);
+        String address = point.toString();
+        address = latLongToAddress(point);
+        String SS = "There is no upcoming Street Sweeping";
 
-        TextView addr = (TextView)view.getTag(android.R.id.text1);
-        addr.setText(address);
+        if (containsLocation(point, campusPoints, false)) SS = "North and East sides of streets: 4/9/2015\nSouth and West sides of streets: 4/10/2015";
 
-        //TextView ss = (TextView)v.findViewById(android.R.id.t);
+        tvAddress.setText(address);
+        tvSS.setText(SS);
 
-        //if (containsLocation(point, campusPoints, false)){
-        //    ss.setText(R.string.street_sweeping);
-       // }
-        //else {
-       //     ss.setText(R.string.no_street_sweeping);
-        //}
-
-        return view;
+        return convertView;
     }
 
     private String latLongToAddress (LatLng point){
 
-        Geocoder geocoder = new Geocoder(context);
+        Geocoder geocoder = new Geocoder(getContext());
         List<Address> addresses;
         String address = point.toString();
 
