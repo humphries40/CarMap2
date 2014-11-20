@@ -2,6 +2,7 @@ package com.example.connor.carmap;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.LocationManager;
@@ -20,11 +21,14 @@ import android.location.Geocoder;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -36,12 +40,16 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.maps.android.PolyUtil.containsLocation;
+
 
 public class MapsActivity extends FragmentActivity implements View.OnClickListener{
 
     private ArrayList<Marker> markers;//this stores all the markers on the map for saving them and restoring them
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private final String TAG = ((Object) this).getClass().getSimpleName();
+    private List<LatLng> campusPoints;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,18 +191,30 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         double longe = myLocation.getLongitude();
         LatLng mylocation = new LatLng(lat, longe);
 
+        final Polygon campus = mMap.addPolygon(new PolygonOptions()
+            .add(new LatLng(40.018166, -83.023682), new LatLng(40.017196, -82.996688), new LatLng(39.986788, -82.994671), new LatLng
+       (39.987939, -83.025527), new LatLng(40.018166,-83.023682)).visible(false));
+
+        campusPoints = campus.getPoints();
+
+
+
         mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng point) {
 
                 Context context = getApplicationContext();
-                CharSequence text = "Added Marker at position: " + point.toString();
+                CharSequence text = "Added Marker at  " + point.toString();
                 int duration = Toast.LENGTH_SHORT;
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
                 MarkerOptions temp = new MarkerOptions().position((point));
+                if (containsLocation(point, campusPoints, false)) {
+                    temp.snippet("campus");
+                    temp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                }
                 Marker mark = mMap.addMarker(temp);
                 markers.add(mark);
 
@@ -207,7 +227,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
                 LatLng point = marker.getPosition();
                 Context context = getApplicationContext();
-                CharSequence text = "Deleted Marker at position: " + point.toString();
+                CharSequence text = "Deleted Marker at " + point.toString();
                 int duration = Toast.LENGTH_SHORT;
 
 
@@ -227,7 +247,6 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
-        mMap.getUiSettings().setRotateGesturesEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
@@ -248,6 +267,10 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
                 LatLng point = getLocationFromAddress(addr);
                 MarkerOptions temp = new MarkerOptions().position((point));
+                if (containsLocation(point, campusPoints, false)) {
+                    temp.snippet("campus");
+                    temp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                }
                 Marker marker = mMap.addMarker(temp);
                 markers.add(marker);
             }
@@ -283,6 +306,10 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
             Marker mark = toLoad.get(count);
             LatLng point = mark.getPosition();
             MarkerOptions temp = new MarkerOptions().position((point));
+            if (containsLocation(point, campusPoints, false)) {
+                temp.snippet("campus");
+                temp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            }
             mMap.addMarker(temp);
             count++;
         }
