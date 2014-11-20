@@ -66,6 +66,11 @@ public class HomeActivity extends Activity {
         PointArrayAdapter adapter = new PointArrayAdapter(this, points);
         lv.setAdapter(adapter);
 
+        LatLng test = adapter.getItem(0);
+
+        text = "In Home Activity test getItem " + test.toString();
+        toast = Toast.makeText(this, text, duration);
+        toast.show();
     }
 
 
