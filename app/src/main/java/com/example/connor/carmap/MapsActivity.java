@@ -26,6 +26,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,39 +76,52 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onStart() {
         super.onStart();
+        markers = new ArrayList<MarkerOptions>();
         Log.e(TAG, "+++ In onStart() +++");
       //  setContentView(R.layout.activity_maps);
          setUpMapIfNeeded();
     }
     protected void onResume() {
-        Context context = getApplicationContext();
-        String ser = SerializeObject.ReadSettings(context, "carMapMarkers.dat");
-        if (ser != null && !ser.equalsIgnoreCase("")) {
-            Object obj = SerializeObject.stringToObject(ser);
-            // Then cast it to your object and
-            if (obj instanceof ArrayList) {
-                // Do something
-                markers = (ArrayList<MarkerOptions>)obj;
+        try {
+            FileInputStream input = openFileInput("latlngpoints.txt");
+            DataInputStream din = new DataInputStream(input);
+            int sz = din.readInt(); // Read line count
+            for (int i = 0; i < sz; i++) {
+                String str = din.readUTF();
+                Log.v("read", str);
+                String[] stringArray = str.split(",");
+                double latitude = Double.parseDouble(stringArray[0]);
+                double longitude = Double.parseDouble(stringArray[1]);
+                MarkerOptions temp = new MarkerOptions().position(new LatLng(latitude, longitude));
+                markers.add(temp);
             }
-        }
-        int count = 0;
-        while(count < markers.size())
-        {
-            mMap.addMarker(markers.get(count));
-            count++;
+            din.close();
+            loadMarkers(markers);
+        } catch (IOException exc) {
+            exc.printStackTrace();
         }
         super.onResume();
         Log.e(TAG, "+++ In onResume() +++");
         setUpMapIfNeeded();
+
     }
 
     protected void onPause() {
-        String ser = SerializeObject.objectToString(markers);
-        Context context = getApplicationContext();
-        if (ser != null && !ser.equalsIgnoreCase("")) {
-            SerializeObject.WriteSettings(context, ser, "carMapMarkers.dat");
-        } else {
-            SerializeObject.WriteSettings(context, "", "carMapMarkers.dat");
+        try {
+            // Modes: MODE_PRIVATE, MODE_WORLD_READABLE, MODE_WORLD_WRITABLE
+            FileOutputStream output = openFileOutput("latlngpoints.txt",
+                    Context.MODE_PRIVATE);
+            DataOutputStream dout = new DataOutputStream(output);
+            dout.writeInt(markers.size()); // Save line count
+            for (MarkerOptions curMark : markers) {
+                LatLng point = curMark.getPosition();
+                dout.writeUTF(point.latitude + "," + point.longitude);
+                Log.v("write", point.latitude + "," + point.longitude);
+            }
+            dout.flush(); // Flush stream ...
+            dout.close(); // ... and close.
+        } catch (IOException exc) {
+            exc.printStackTrace();
         }
         super.onPause();
         Log.e(TAG, "+++ In onPause() +++");
@@ -240,5 +257,13 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
         LatLng pos = new LatLng(latitude, longitude);
         return pos;
+    }
+
+    private void loadMarkers(ArrayList<MarkerOptions> toLoad){
+        int count = 0;
+        while(count < toLoad.size()) {
+            mMap.addMarker(toLoad.get(count));
+            count++;
+        }
     }
 }
