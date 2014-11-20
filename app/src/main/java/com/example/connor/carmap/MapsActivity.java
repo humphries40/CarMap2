@@ -2,14 +2,11 @@ package com.example.connor.carmap;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.location.LocationManager;
 import android.location.Location;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,11 +29,9 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -280,7 +275,6 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     public LatLng getLocationFromAddress(String strAddress) {
 
         Geocoder geoCoder = new Geocoder(this);
-        List<Address> address;
         double latitude = 0, longitude = 0;
 
         try {
@@ -295,8 +289,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
             e.printStackTrace();
         }
 
-        LatLng pos = new LatLng(latitude, longitude);
-        return pos;
+        return new LatLng(latitude, longitude);
     }
 
     private void loadMarkers(ArrayList<Marker> toLoad){

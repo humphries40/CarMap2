@@ -20,7 +20,9 @@
     <string name="title_activity_map_help">MapHelpActivity</string>
     <string name="help_text"><b>How to manage parking spots</b>\n\n
         You can add a new parking spot by long-clicking on the map, or by adding an address to the text field.\n\n
-        To remove a parking spot click on the marker.\n\n</string>
+        To remove a parking spot click on the marker.\n\nBlue markers indicate a Street Sweeping zone.\n\n
+        The <b>North</b> and <b>East</b> sides of the streets are swept on the <b>Second Thursday</b> of the months April-October\n\n
+        The <b>South</b> and <b>West</b> sides of the streets are swept on the <b>Second Friday</b> of the months April-October</string>
     <string name="exit_help">Close</string>
     <string name="edit_message">Add by Address</string>
     <string name="button_send">Add</string>
