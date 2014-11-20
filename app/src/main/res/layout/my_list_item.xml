@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/list_button_delete"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:clickable="true"
+        android:layout_gravity="right" />
+
+    <TextView
+        android:layout_width="308dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:gravity="left|center"
+        android:id="@+id/textView1"
+        android:layout_row="0"
+        android:layout_column="0" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:id="@+id/textView2"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:gravity="left"
+        android:maxLines="4"
+        android:textIsSelectable="true"
+        android:textSize="16dp" />
+
+</GridLayout>

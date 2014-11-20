@@ -11,6 +11,7 @@
     <string name="title_activity_homescreen">Homescreen</string>
     <string name="title_activity_action_bar">ActionBar</string>
     <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="application_title">CarMap</string>
     <string name="navtitle">Dude Where\'s My Car</string>
     <string name="exit">Exit</string>
     <string name="settings">Settings</string>
@@ -26,5 +27,7 @@
     <string name="exit_help">Close</string>
     <string name="edit_message">Add by Address</string>
     <string name="button_send">Add</string>
+    <string name="street_sweeping"> <b>North</b> and <b>East</b> sides of the streets: 4/9/2015\n\n<b>South</b> and <b>West</b> sides of the streets: 4/10/2015</string>
+    <string name="no_street_sweeping">There is no upcoming Street Sweeping</string>
 
 </resources>

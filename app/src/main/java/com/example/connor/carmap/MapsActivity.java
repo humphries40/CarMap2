@@ -43,7 +43,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     private ArrayList<Marker> markers;//this stores all the markers on the map for saving them and restoring them
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private final String TAG = ((Object) this).getClass().getSimpleName();
-    private List<LatLng> campusPoints;
+    public List<LatLng> campusPoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
