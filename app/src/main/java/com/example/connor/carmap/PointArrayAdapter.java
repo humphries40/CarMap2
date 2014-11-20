@@ -28,9 +28,12 @@ import static com.google.maps.android.PolyUtil.containsLocation;
 public class PointArrayAdapter extends ArrayAdapter<LatLng> {
 
     List<LatLng> campusPoints = new ArrayList<LatLng>();
+    List<LatLng> points = new ArrayList<LatLng>();
 
     public PointArrayAdapter (Activity context,  ArrayList<LatLng> list) {
         super(context, 0, list);
+
+        points = list;
 
         campusPoints.add(new LatLng(40.018166, -83.023682));
         campusPoints.add(new LatLng(40.017196, -82.996688));
@@ -44,7 +47,7 @@ public class PointArrayAdapter extends ArrayAdapter<LatLng> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LatLng point = getItem(position);
+        final LatLng point = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.my_list_item, parent, false);
@@ -52,6 +55,7 @@ public class PointArrayAdapter extends ArrayAdapter<LatLng> {
 
         TextView tvAddress = (TextView) convertView.findViewById(R.id.list_address);
         TextView tvSS = (TextView) convertView.findViewById(R.id.list_street_sweeping);
+        Button delButton = (Button) convertView.findViewById(R.id.list_button_delete);
 
         String address = point.toString();
         address = latLongToAddress(point);
@@ -61,6 +65,14 @@ public class PointArrayAdapter extends ArrayAdapter<LatLng> {
 
         tvAddress.setText(address);
         tvSS.setText(SS);
+
+        delButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                points.remove(point);
+                notifyDataSetChanged();
+            }
+        });
 
         return convertView;
     }

@@ -56,6 +56,10 @@ public class HomeActivity extends Activity {
             adapter.notifyDataSetChanged();
             return true;
         }
+        if (id == R.id.refresh_list) {
+            adapter.notifyDataSetChanged();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
