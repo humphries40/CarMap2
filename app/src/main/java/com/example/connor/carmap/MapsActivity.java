@@ -261,13 +261,23 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
             if (addr.length() > 0){
 
                 LatLng point = getLocationFromAddress(addr);
-                MarkerOptions temp = new MarkerOptions().position((point));
-                if (containsLocation(point, campusPoints, false)) {
-                    temp.snippet("campus");
-                    temp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                LatLng error = new LatLng(0.0,0.0);
+                if (point.equals(error))
+                {
+                    text = "Invalid Address";
+                    toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                } else {
+
+                    MarkerOptions temp = new MarkerOptions().position((point));
+                    if (containsLocation(point, campusPoints, false)) {
+                        temp.snippet("campus");
+                        temp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    }
+
+                    Marker marker = mMap.addMarker(temp);
+                    markers.add(marker);
                 }
-                Marker marker = mMap.addMarker(temp);
-                markers.add(marker);
             }
         }
     }

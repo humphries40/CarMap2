@@ -81,8 +81,20 @@ public class HomeActivity extends Activity {
                     if (addr.length() > 0) {
 
                         LatLng point = getLocationFromAddress(addr);
-                        points.add(point);
-                        adapter.notifyDataSetChanged();
+                        LatLng error = new LatLng(0.0,0.0);
+                        if (point.equals(error))
+                        {
+                            Context context = getApplicationContext();
+                            CharSequence text = "Invalid Address";
+                            int duration = Toast.LENGTH_SHORT;
+
+                            Toast toast = Toast.makeText(context, text, duration);
+                            toast.show();
+
+                        } else {
+                            points.add(point);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 }
             });

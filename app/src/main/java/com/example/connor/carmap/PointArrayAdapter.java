@@ -16,7 +16,10 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.R.layout.simple_list_item_1;
@@ -61,7 +64,15 @@ public class PointArrayAdapter extends ArrayAdapter<LatLng> {
         address = latLongToAddress(point);
         String SS = "There is no upcoming Street Sweeping";
 
-        if (containsLocation(point, campusPoints, false)) SS = "North and East sides of streets: 4/9/2015\nSouth and West sides of streets: 4/10/2015";
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+
+        StreetSweepingHelper ssh = new StreetSweepingHelper();
+        Date thurs = ssh.getNextThursdayStreetSweeping();
+        Date fri = ssh.getNextFridayStreetSweeping();
+
+
+
+        if (containsLocation(point, campusPoints, false)) SS = "North and East sides of streets: "+format.format(thurs)+"\nSouth and West sides of streets: "+ format.format(fri);
 
         tvAddress.setText(address);
         tvSS.setText(SS);
