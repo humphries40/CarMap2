@@ -1,11 +1,16 @@
 package com.example.connor.carmap;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,8 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
-
+import java.util.List;
 
 
 public class HomeActivity extends Activity {
@@ -58,6 +62,38 @@ public class HomeActivity extends Activity {
         }
         if (id == R.id.refresh_list) {
             adapter.notifyDataSetChanged();
+            return true;
+        }
+        if (id == R.id.add_address) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+            alert.setTitle("Add an Address");
+            alert.setMessage("Enter a fully qualified address or the name of a place");
+
+            // Set an EditText view to get user input
+            final EditText input = new EditText(this);
+            alert.setView(input);
+
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    String addr = input.getText().toString();
+                    // Do something with value!
+                    if (addr.length() > 0) {
+
+                        LatLng point = getLocationFromAddress(addr);
+                        points.add(point);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+
+            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Canceled.
+                }
+            });
+
+            alert.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -130,6 +166,26 @@ public class HomeActivity extends Activity {
         //attach adapter to view
         ListView listView = (ListView) findViewById(R.id.lv);
         listView.setAdapter(adapter);
+    }
+
+    public LatLng getLocationFromAddress(String strAddress) {
+
+        Geocoder geoCoder = new Geocoder(this);
+        double latitude = 0, longitude = 0;
+
+        try {
+            List<Address> addresses =
+                    geoCoder.getFromLocationName(strAddress, 1);
+            if (addresses.size() > 0) {
+                latitude = addresses.get(0).getLatitude();
+                longitude = addresses.get(0).getLongitude();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new LatLng(latitude, longitude);
     }
 
 }

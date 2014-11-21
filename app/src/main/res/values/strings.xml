@@ -31,5 +31,6 @@
     <string name="no_street_sweeping">There is no upcoming Street Sweeping</string>
     <string name="clear_list">Clear</string>
     <string name="refresh_list">Refresh</string>
+    <string name="add_address">Add Address</string>
 
 </resources>
