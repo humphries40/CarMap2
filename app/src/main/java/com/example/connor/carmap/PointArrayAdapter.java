@@ -86,7 +86,9 @@ public class PointArrayAdapter extends ArrayAdapter<LatLng> {
         try {
             addresses = geocoder.getFromLocation(point.latitude, point.longitude, 1);
 
-            address = addresses.get(0).getAddressLine(0);
+            if (addresses .size() > 0) {
+                address = addresses.get(0).getAddressLine(0);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
