@@ -199,17 +199,10 @@ public class HomeActivity extends Activity {
                 exc.printStackTrace();
             }
 
-<<<<<<< HEAD
-        //create the adapter
-        adapter = new PointArrayAdapter(this, points);
-        //attach adapter to view
-        ListView listView = (ListView) findViewById(R.id.parkingSpaces);
-        listView.setAdapter(adapter);
-=======
             //create the adapter
             adapter = new PointArrayAdapter(this, points);
             //attach adapter to view
-            ListView listView = (ListView) findViewById(R.id.lv);
+            ListView listView = (ListView) findViewById(R.id.parkingSpaces);
             listView.setAdapter(adapter);
         } else
         {
@@ -225,7 +218,6 @@ public class HomeActivity extends Activity {
             });
             alert.show();
         }
->>>>>>> origin/master
     }
 
     public LatLng getLocationFromAddress(String strAddress) {
