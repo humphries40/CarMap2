@@ -10,7 +10,7 @@ import android.widget.TextView;
 /**
  * Created by Connor on 12/1/2014.
  */
-public class MeterActivityTest extends ActivityUnitTestCase<MeterActivity{
+public class MeterActivityTest extends ActivityUnitTestCase<MeterActivity>{
 
       private Intent mLaunchIntent;
 
@@ -46,9 +46,6 @@ public class MeterActivityTest extends ActivityUnitTestCase<MeterActivity{
 
         }
 
-
-
-
         @MediumTest
         public void testCountDownWasStartedOnClick() {
             startActivity(mLaunchIntent, null, null);
@@ -62,18 +59,10 @@ public class MeterActivityTest extends ActivityUnitTestCase<MeterActivity{
             //button from code
             startTimerButton.performClick();
 
-            // Get the intent for the next started activity
-            final Intent launchIntent = getStartedActivityIntent();
-            //Verify the intent was not null.
-            assertNotNull("Intent was null", launchIntent);
+
+            //Verify the countdown Timer was not null.
+            assertNotNull("Timer was null", getActivity().timer);
             //Verify that LaunchActivity was finished after button click
-            assertTrue(isFinishCalled());
-
-
-         //   final String payload = launchIntent.getStringExtra(NextActivity.EXTRAS_PAYLOAD_KEY);
-            //Verify that payload data was added to the intent
-       //     assertEquals("Payload is empty", LaunchActivity.STRING_PAYLOAD
-            //        , payload);
         }
     }
-}
+

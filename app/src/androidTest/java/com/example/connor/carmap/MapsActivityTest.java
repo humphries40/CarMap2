@@ -1,8 +1,10 @@
 package com.example.connor.carmap;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
+import android.view.View;
 import android.widget.Button;
 
 /**
@@ -33,9 +35,10 @@ public class MapsActivityTest extends ActivityUnitTestCase<MapsActivity>{
             //Start the activity under test in isolation, without values for savedInstanceState and
             //lastNonConfigurationInstance
             startActivity(mLaunchIntent, null, null);
-//            assertNotNull("mLaunchActivity is null", getActivity());
-  //          assertNotNull("mLaunchNextButton is null", launchNextButton);
+
+            //final View map = (View) getActivity().findViewById(R.id.map);
+            assertNotNull("mMapActivity is null", getActivity());
+            //assertNotNull("Map is null", map);
 
         }
-    }
 }

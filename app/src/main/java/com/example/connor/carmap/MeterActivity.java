@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 public class MeterActivity extends Activity {
 
-    private CountDownTimer timer;
+    public CountDownTimer timer;
     private CountDownTimer pausedTimer;
 
     private NotificationCompat.Builder timeOut =
