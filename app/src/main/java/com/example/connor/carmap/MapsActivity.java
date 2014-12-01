@@ -1,9 +1,15 @@
 package com.example.connor.carmap;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +40,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.google.maps.android.PolyUtil.containsLocation;
 
@@ -51,8 +58,8 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         Log.e(TAG, "+++ In onCreate() +++");
         setContentView(R.layout.activity_maps);
 
-        View btnNewGame = findViewById(R.id.button_submit);
-        btnNewGame.setOnClickListener(this);
+        View btnSubmit = findViewById(R.id.button_submit);
+        btnSubmit.setOnClickListener(this);
 
         setUpMapIfNeeded();
 
@@ -159,14 +166,34 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
      */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
+
+        //check for network connection
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = ((activeNetwork != null) && (activeNetwork.isConnectedOrConnecting()));
+
+        if (isConnected) {
+            if (mMap == null) {
+                // Try to obtain the map from the SupportMapFragment.
+                mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                        .getMap();
+                // Check if we were successful in obtaining the map.
+                if (mMap != null) {
+                    setUpMap();
+                }
             }
+        } else
+        {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+            alert.setTitle("Connectivity Error");
+            alert.setMessage("CarMap needs internet access for most features to function, please connect to the internet before using the map or homepage activities.");
+            alert.setNegativeButton("Go Back", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    finish();
+                }
+            });
+            alert.show();
         }
     }
 
@@ -178,13 +205,47 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
      */
     private void setUpMap() {
 
-        LocationManager locationmanager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
-        Location myLocation = locationmanager.getLastKnownLocation(locationProvider);
 
-        double lat= myLocation.getLatitude();
-        double longe = myLocation.getLongitude();
-        LatLng mylocation = new LatLng(lat, longe);
+        LatLng mylocation = new LatLng(39.961309, -82.999197);
+
+        //check for gps connection
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean gpsConnection = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (gpsConnection){
+
+            Location myLocation = null;
+            Criteria c = new Criteria();
+            c.setAccuracy(Criteria.ACCURACY_FINE);
+
+            String bestProvider = manager.getBestProvider(c, true);
+
+            if (myLocation == null) {
+                myLocation = manager.getLastKnownLocation("network");
+            }
+
+            double lat= myLocation.getLatitude();
+            double longe = myLocation.getLongitude();
+            mylocation = new LatLng(lat, longe);
+        }else {
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+            alert.setTitle("No GPS");
+            alert.setMessage("CarMap needs GPS to be enabled to display your current location, click okay to enable GPS.");
+
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+            });
+            alert.setNegativeButton("Not Now", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    //Cancelled
+                }
+            });
+            alert.show();
+        }
 
         final Polygon campus = mMap.addPolygon(new PolygonOptions()
             .add(new LatLng(40.018166, -83.023682), new LatLng(40.017196, -82.996688), new LatLng(39.986788, -82.994671), new LatLng
@@ -238,9 +299,12 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
             }
         });
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 15));
 
-        mMap.setMyLocationEnabled(true);
+        if (gpsConnection) {
+            mMap.setMyLocationEnabled(true);
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 15));
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -249,7 +313,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     public void onClick(View v){
         if (v.getId() == R.id.button_submit) {
 
-            EditText mAddress = (EditText)findViewById(R.id.address);
+            EditText mAddress = (EditText)findViewById(R.id.address_text);
             String addr = mAddress.getText().toString();
 
             Context context = getApplicationContext();
@@ -258,9 +322,19 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
+
+            LatLng point = new LatLng(0.0,0.0);
             if (addr.length() > 0){
 
-                LatLng point = getLocationFromAddress(addr);
+                try {
+                    point = new LocationFromAddress(context).execute(addr).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                //LatLng point = getLocationFromAddress(addr);
                 LatLng error = new LatLng(0.0,0.0);
                 if (point.equals(error))
                 {
