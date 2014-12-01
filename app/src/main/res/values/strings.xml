@@ -27,10 +27,11 @@
     <string name="exit_help">Close</string>
     <string name="edit_message">Add by Address</string>
     <string name="button_send">Add</string>
-    <string name="street_sweeping"> <b>North</b> and <b>East</b> sides of the streets: 4/9/2015\n<b>South</b> and <b>West</b> sides of the streets: 4/10/2015</string>
+    <string name="street_sweeping"><b>North</b> and <b>East</b> sides of the streets: 4/9/2015\n<b>South</b> and <b>West</b> sides of the streets: 4/10/2015</string>
     <string name="no_street_sweeping">There is no upcoming Street Sweeping</string>
     <string name="clear_list">Clear</string>
     <string name="refresh_list">Refresh</string>
     <string name="add_address">Add Address</string>
+    <string name="title_activity_home_activity_test">HomeActivityTest</string>
 
 </resources>
