@@ -82,8 +82,6 @@ public class NavigationActivity extends Activity implements View.OnClickListener
         btnAudio.setOnClickListener(this);
         View btnVideo = findViewById(R.id.meter);
         btnVideo.setOnClickListener(this);
-        View btnSettings = findViewById(R.id.settings);
-        btnSettings.setOnClickListener(this);
         View btnExit = findViewById(R.id.exit);
         btnExit.setOnClickListener(this);
     }
@@ -135,9 +133,6 @@ public class NavigationActivity extends Activity implements View.OnClickListener
                 break;
             case R.id.meter:
                 startActivity(new Intent(this, MeterActivity.class));
-                break;
-            case R.id.settings:
-                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.exit:
             {

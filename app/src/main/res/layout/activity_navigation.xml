@@ -5,7 +5,8 @@
         android:background="#676767"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="15.5sp">
+        android:textSize="15.5sp"
+        android:id="@+id/activity_navigation">
         <TextView
             android:text="@string/navtitle"
             android:textSize="30sp"
@@ -25,34 +26,29 @@
             android:layout_gravity="center" >
         <Button
             android:id="@+id/home"
+            android:textSize="30sp"
             android:text="@string/title_activity_home"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="110dp"
             />
         <Button
             android:id="@+id/map"
             android:text="@string/title_activity_maps"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="110dp"
+            android:textSize="30sp" />
         <Button
             android:id="@+id/meter"
             android:text="@string/title_activity_meter"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-        <Button
-            android:id="@+id/settings"
-            android:text="@string/settings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="110dp"
+            android:textSize="30sp" />
         <Button
             android:id="@+id/exit"
             android:text="@string/exit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="110dp"
+            android:textSize="30sp" />
     </LinearLayout>
     </ScrollView>
 </LinearLayout>
