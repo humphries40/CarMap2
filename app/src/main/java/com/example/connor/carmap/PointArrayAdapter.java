@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static android.R.layout.simple_list_item_1;
 import static com.google.maps.android.PolyUtil.containsLocation;
@@ -32,9 +33,12 @@ public class PointArrayAdapter extends ArrayAdapter<LatLng> {
 
     List<LatLng> campusPoints = new ArrayList<LatLng>();
     List<LatLng> points = new ArrayList<LatLng>();
+    Context context;
 
     public PointArrayAdapter (Activity context,  ArrayList<LatLng> list) {
         super(context, 0, list);
+
+        this.context = context;
 
         points = list;
 
@@ -61,7 +65,16 @@ public class PointArrayAdapter extends ArrayAdapter<LatLng> {
         Button delButton = (Button) convertView.findViewById(R.id.list_button_delete);
 
         String address = point.toString();
-        address = latLongToAddress(point);
+        try {
+            address = new AddressFromLocation(context).execute(point).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+
+        //address = latLongToAddress(point);
         String SS = "There is no upcoming Street Sweeping";
 
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");

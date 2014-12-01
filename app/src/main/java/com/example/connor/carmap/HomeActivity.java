@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -24,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class HomeActivity extends Activity {
@@ -77,14 +82,24 @@ public class HomeActivity extends Activity {
             alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     String addr = input.getText().toString();
+                    Context context = getApplicationContext();
                     // Do something with value!
                     if (addr.length() > 0) {
 
-                        LatLng point = getLocationFromAddress(addr);
+                        LatLng point = new LatLng(0.0,0.0);
+
+                        try {
+                            point = new LocationFromAddress(context).execute(addr).get();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+
+                        //LatLng point = getLocationFromAddress(addr);
                         LatLng error = new LatLng(0.0,0.0);
                         if (point.equals(error))
                         {
-                            Context context = getApplicationContext();
                             CharSequence text = "Invalid Address";
                             int duration = Toast.LENGTH_SHORT;
 
@@ -153,31 +168,64 @@ public class HomeActivity extends Activity {
         points = new ArrayList<LatLng>();
 
 
-        //popuate arrayList of LatLngs
-        try {
-            FileInputStream input = openFileInput("latlngpoints.txt");
-            DataInputStream din = new DataInputStream(input);
-            int sz = din.readInt(); // Read line count
-            for (int i = 0; i < sz; i++) {
-                String str = din.readUTF();
-                Log.v("read", str);
-                String[] stringArray = str.split(",");
-                double latitude = Double.parseDouble(stringArray[0]);
-                double longitude = Double.parseDouble(stringArray[1]);
-                LatLng temp = new LatLng(latitude, longitude);
+        //check for network connection
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = ((activeNetwork != null) && (activeNetwork.isConnectedOrConnecting()));
 
-                points.add(temp);
+        //check for gps connection
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean gpsConnection = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+
+        if (isConnected) {
+            //popuate arrayList of LatLngs
+            try {
+                FileInputStream input = openFileInput("latlngpoints.txt");
+                DataInputStream din = new DataInputStream(input);
+                int sz = din.readInt(); // Read line count
+                for (int i = 0; i < sz; i++) {
+                    String str = din.readUTF();
+                    Log.v("read", str);
+                    String[] stringArray = str.split(",");
+                    double latitude = Double.parseDouble(stringArray[0]);
+                    double longitude = Double.parseDouble(stringArray[1]);
+                    LatLng temp = new LatLng(latitude, longitude);
+
+                    points.add(temp);
+                }
+                din.close();
+            } catch (IOException exc) {
+                exc.printStackTrace();
             }
-            din.close();
-        } catch (IOException exc) {
-            exc.printStackTrace();
-        }
 
+<<<<<<< HEAD
         //create the adapter
         adapter = new PointArrayAdapter(this, points);
         //attach adapter to view
         ListView listView = (ListView) findViewById(R.id.parkingSpaces);
         listView.setAdapter(adapter);
+=======
+            //create the adapter
+            adapter = new PointArrayAdapter(this, points);
+            //attach adapter to view
+            ListView listView = (ListView) findViewById(R.id.lv);
+            listView.setAdapter(adapter);
+        } else
+        {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+            alert.setTitle("Connectivity Error");
+            alert.setMessage("CarMap needs internet and GPS access for most features to function, please connect to the internet before using the map or homepage activities.");
+
+            alert.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    finish();
+                }
+            });
+            alert.show();
+        }
+>>>>>>> origin/master
     }
 
     public LatLng getLocationFromAddress(String strAddress) {
