@@ -47,8 +47,8 @@ import static com.google.maps.android.PolyUtil.containsLocation;
 
 public class MapsActivity extends FragmentActivity implements View.OnClickListener{
 
-    private ArrayList<Marker> markers;//this stores all the markers on the map for saving them and restoring them
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    public ArrayList<Marker> markers;//this stores all the markers on the map for saving them and restoring them
+    public GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private final String TAG = ((Object) this).getClass().getSimpleName();
     public List<LatLng> campusPoints;
 
@@ -325,7 +325,6 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
             LatLng point = new LatLng(0.0,0.0);
             if (addr.length() > 0){
-
                 try {
                     point = new LocationFromAddress(context).execute(addr).get();
                 } catch (InterruptedException e) {

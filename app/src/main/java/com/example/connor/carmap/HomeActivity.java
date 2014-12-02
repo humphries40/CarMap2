@@ -202,7 +202,7 @@ public class HomeActivity extends Activity {
             //create the adapter
             adapter = new PointArrayAdapter(this, points);
             //attach adapter to view
-            ListView listView = (ListView) findViewById(R.id.parkingSpaces);
+            ListView listView = (ListView) findViewById(R.id.lv);
             listView.setAdapter(adapter);
         } else
         {

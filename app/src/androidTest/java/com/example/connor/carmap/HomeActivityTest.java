@@ -34,7 +34,7 @@ public class HomeActivityTest extends ActivityUnitTestCase<HomeActivity>{
             //Start the activity under test in isolation, without values for savedInstanceState and
             //lastNonConfigurationInstance
             startActivity(mLaunchIntent, null, null);
-            final ListView parkingSpacesList = (ListView) getActivity().findViewById(R.id.parkingSpaces);
+            final ListView parkingSpacesList = (ListView) getActivity().findViewById(R.id.lv);
 
             assertNotNull("mLaunchActivity is null", getActivity());
             assertNotNull("mLaunchNextButton is null", parkingSpacesList);
